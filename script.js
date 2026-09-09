@@ -405,4 +405,4 @@ window.addEventListener('load', () => {
   const site = document.getElementById('site');
   if (site && !site.hasAttribute('hidden')) initScrollReveal();
 });
-    
+  
