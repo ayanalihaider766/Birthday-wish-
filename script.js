@@ -21,16 +21,20 @@ function typeText(el, text, speed, onDone) {
   }, speed);
 }
 
-function onceVisible(el, callback, threshold = 0.35) {
+function revealOnce(el, className, threshold = 0.3, delay = 0) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        callback();
+        setTimeout(() => el.classList.add(className), delay);
         io.unobserve(entry.target);
       }
     });
   }, { threshold });
   io.observe(el);
+}
+
+function staggerReveal(nodeList, className, threshold = 0.25, stepMs = 90) {
+  nodeList.forEach((el, i) => revealOnce(el, className, threshold, (i % 8) * stepMs));
 }
 
 // ============================================================
@@ -115,13 +119,9 @@ function startHearts() {
   spawnHeart();
   heartTimer = setInterval(spawnHeart, 650);
 }
-function stopHearts() {
-  clearInterval(heartTimer);
-  heartTimer = null;
-}
 
 // ============================================================
-// Confetti burst (canvas one-shot, for the birthday moment)
+// Confetti burst (one-shot overlay canvas)
 // ============================================================
 function burstConfetti(originYRatio = 0.35) {
   if (prefersReducedMotion) return;
@@ -137,9 +137,9 @@ function burstConfetti(originYRatio = 0.35) {
   cvs.height = window.innerHeight;
   const c = cvs.getContext('2d');
 
-  const colors = ['#ff5c8d', '#ffd27a', '#ffb6c9', '#a56bff', '#ffffff'];
+  const colors = ['#ff5c9e', '#e8c9a0', '#ff8fb3', '#a56bff', '#ffffff'];
   const pieces = Array.from({ length: 140 }, () => ({
-    x: cvs.width / 2 + (Math.random() - 0.5) * 200,
+    x: cvs.width / 2 + (Math.random() - 0.5) * 220,
     y: cvs.height * originYRatio,
     vx: (Math.random() - 0.5) * 9,
     vy: Math.random() * -9 - 3,
@@ -178,66 +178,116 @@ function burstConfetti(originYRatio = 0.35) {
 }
 
 // ============================================================
+// Midnight countdown — ticks down to the next local midnight,
+// then bursts into celebration automatically.
+// ============================================================
+const mcTime = document.getElementById('mcTime');
+const mcLabel = document.getElementById('mcLabel');
+const mcWrap = document.getElementById('midnightCountdown');
+let midnightHit = false;
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function updateMidnightCountdown() {
+  if (!mcTime || midnightHit) return;
+  const now = new Date();
+  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const diff = nextMidnight - now;
+
+  if (diff <= 1000) {
+    midnightHit = true;
+    mcLabel.textContent = "It's Officially Her Day";
+    mcTime.textContent = '🎉 12:00 AM 🎉';
+    mcWrap.classList.add('hit');
+    burstConfetti(0.08);
+    setTimeout(() => burstConfetti(0.15), 400);
+    setTimeout(() => burstConfetti(0.25), 900);
+    return;
+  }
+
+  const h = Math.floor(diff / (1000 * 60 * 60));
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+  mcTime.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+}
+
+if (mcTime) {
+  updateMidnightCountdown();
+  setInterval(updateMidnightCountdown, 1000);
+}
+
+// ============================================================
 // Intro sequence
 // ============================================================
+const introEl = document.getElementById('intro');
 const introLine = document.getElementById('introLine');
 const openHeartBtn = document.getElementById('openHeartBtn');
-const introText = "Aaj ka din khaas hai, kyunki aap iss duniya mein aayi thi — aur meri duniya iske baad hi puri hui.";
+const introText = introLine ? introLine.textContent.trim() : '';
 
 window.addEventListener('DOMContentLoaded', () => {
   startHearts();
-  if (introLine) {
-    setTimeout(() => typeText(introLine, introText, 32), 500);
+  if (introLine && introText) {
+    setTimeout(() => {
+      typeText(introLine, introText, 32, () => {
+        introLine.classList.add('done');
+      });
+    }, 500);
   }
 });
 
 if (openHeartBtn) {
   openHeartBtn.addEventListener('click', () => {
-    const intro = document.getElementById('intro');
     const site = document.getElementById('site');
-    intro.style.opacity = '0';
-    intro.style.transition = 'opacity .6s ease';
+    introEl.classList.add('leaving');
+    burstConfetti(0.2);
     setTimeout(() => {
-      intro.setAttribute('hidden', '');
-      intro.style.opacity = '';
+      introEl.setAttribute('hidden', '');
       site.removeAttribute('hidden');
-      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'auto' : 'auto' });
-      burstConfetti(0.25);
-      revealOnLoad();
-    }, 600);
+      window.scrollTo(0, 0);
+      initScrollReveal();
+    }, 1100);
   });
 }
 
 // ============================================================
-// Scroll reveal for sections / timeline cards / reason cards
+// Scroll reveal — runs once the main site is shown
 // ============================================================
-function revealOnLoad() {
-  const revealables = document.querySelectorAll(
-    '.tl-card, .reason-card, .memory-card, .counter-box, .nick-chip, .section-title'
-  );
-  revealables.forEach((el, idx) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(24px)';
-    el.style.transition = 'opacity .6s ease, transform .6s ease';
-    onceVisible(el, () => {
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-      }, (idx % 6) * 80);
-    });
-  });
+function initScrollReveal() {
+  document.querySelectorAll('.section-title, .story-date').forEach(el => revealOnce(el, 'in-view', 0.4));
+  staggerReveal(document.querySelectorAll('.tl-card'), 'in-view', 0.3, 0);
+  staggerReveal(document.querySelectorAll('.nick-chip'), 'in-view', 0.3, 70);
+  staggerReveal(document.querySelectorAll('.counter-box'), 'in-view', 0.3, 90);
+  staggerReveal(document.querySelectorAll('.reason-card'), 'in-view', 0.25, 90);
+  staggerReveal(document.querySelectorAll('.memory-card'), 'in-view', 0.25, 90);
+  document.querySelectorAll('.letter-card, .wish-card').forEach(el => revealOnce(el, 'in-view', 0.3));
+
+  initLetterTyping();
+  initFinalSection();
 }
 
 // ============================================================
-// Letter typing effect (typed once it scrolls into view)
+// Letter / wish typing effect (typed once each scrolls into view)
 // ============================================================
-const letterText = document.getElementById('letterText');
-if (letterText) {
-  const fullLetter = letterText.textContent.trim();
-  letterText.textContent = '';
-  onceVisible(document.getElementById('letterSection') || letterText, () => {
-    typeText(letterText, fullLetter, 18);
-  }, 0.25);
+function initLetterTyping() {
+  document.querySelectorAll('.letter-text, .wish-text').forEach(el => {
+    const full = el.textContent.trim();
+    el.textContent = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    revealOnce(el, 'typing-armed', 0.25, 0);
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          el.appendChild(cursor);
+          typeText(el, full, 16, () => {
+            el.appendChild(cursor);
+          });
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    io.observe(el);
+  });
 }
 
 // ============================================================
@@ -267,6 +317,18 @@ if (cDays) {
 }
 
 // ============================================================
+// Reason cards — tap toggle for touch devices (mirrors :hover)
+// ============================================================
+document.querySelectorAll('.reason-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.reason-card.tapped').forEach(c => {
+      if (c !== card) c.classList.remove('tapped');
+    });
+    card.classList.toggle('tapped');
+  });
+});
+
+// ============================================================
 // Memory wall — flip cards
 // ============================================================
 document.querySelectorAll('.memory-card').forEach(card => {
@@ -276,27 +338,33 @@ document.querySelectorAll('.memory-card').forEach(card => {
 // ============================================================
 // Final section — sequential line reveal + confetti
 // ============================================================
-const finalSection = document.getElementById('finalSection');
-if (finalSection) {
-  const lines = ['finalLine1', 'finalLine2', 'finalLine3', 'finalTitle']
-    .map(id => document.getElementById(id))
-    .filter(Boolean);
+function initFinalSection() {
+  const finalSection = document.getElementById('finalSection');
+  if (!finalSection) return;
 
-  lines.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(16px)';
-    el.style.transition = 'opacity .7s ease, transform .7s ease';
-  });
+  const line1 = document.getElementById('finalLine1');
+  const line2 = document.getElementById('finalLine2');
+  const line3 = document.getElementById('finalLine3');
+  const title = document.getElementById('finalTitle');
+  const heart = document.querySelector('.final-heart');
+  const btn = finalSection.querySelector('.glow-btn');
 
-  onceVisible(finalSection, () => {
-    lines.forEach((el, i) => {
-      setTimeout(() => {
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-        if (i === lines.length - 1) burstConfetti(0.4);
-      }, i * 500);
+  const sequence = [line1, line2, line3, title, heart, btn].filter(Boolean);
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        sequence.forEach((el, i) => {
+          setTimeout(() => {
+            el.classList.add('show');
+            if (el === title) burstConfetti(0.35);
+          }, i * 500);
+        });
+        io.unobserve(entry.target);
+      }
     });
-  }, 0.4);
+  }, { threshold: 0.4 });
+  io.observe(finalSection);
 }
 
 // ============================================================
@@ -306,23 +374,35 @@ const modalOverlay = document.getElementById('modalOverlay');
 const lastThingBtn = document.getElementById('lastThingBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
-if (lastThingBtn && modalOverlay) {
-  lastThingBtn.addEventListener('click', () => {
-    modalOverlay.removeAttribute('hidden');
-    burstConfetti(0.15);
-  });
+function openModal() {
+  if (!modalOverlay) return;
+  modalOverlay.removeAttribute('hidden');
+  requestAnimationFrame(() => modalOverlay.classList.add('visible'));
+  burstConfetti(0.15);
 }
-if (closeModalBtn && modalOverlay) {
-  closeModalBtn.addEventListener('click', () => modalOverlay.setAttribute('hidden', ''));
+
+function closeModal() {
+  if (!modalOverlay) return;
+  modalOverlay.classList.remove('visible');
+  setTimeout(() => modalOverlay.setAttribute('hidden', ''), 400);
 }
+
+if (lastThingBtn) lastThingBtn.addEventListener('click', openModal);
+if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
 if (modalOverlay) {
   modalOverlay.addEventListener('click', (e) => {
-    if (e.target === modalOverlay) modalOverlay.setAttribute('hidden', '');
+    if (e.target === modalOverlay) closeModal();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modalOverlay.hasAttribute('hidden')) {
-      modalOverlay.setAttribute('hidden', '');
-    }
+    if (e.key === 'Escape' && !modalOverlay.hasAttribute('hidden')) closeModal();
   });
-    }
-  
+}
+
+// ============================================================
+// Fallback: if #site somehow starts visible (no JS-free intro), reveal anyway
+// ============================================================
+window.addEventListener('load', () => {
+  const site = document.getElementById('site');
+  if (site && !site.hasAttribute('hidden')) initScrollReveal();
+});
+    
