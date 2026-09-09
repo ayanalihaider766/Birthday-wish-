@@ -3,156 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Happy Birthday, Nida ❤️</title>
-<style>
-  :root{
-    --pink:#ff5c8d;
-    --pink-soft:#ffb6c9;
-    --gold:#ffd27a;
-    --bg1:#170014;
-    --bg2:#2b0421;
-    --glass:rgba(255,255,255,0.08);
-    --glass-border:rgba(255,255,255,0.18);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{
-    background:linear-gradient(160deg,var(--bg1),var(--bg2) 60%,#1a0016);
-    color:#fff0f5;
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    overflow-x:hidden;
-    scroll-behavior:smooth;
-  }
-  .heart{color:var(--pink);}
-  canvas#particles{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
-  #floating-hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
-  .fh{position:absolute;bottom:-40px;font-size:20px;opacity:.7;animation:floatUp linear forwards;}
-  @keyframes floatUp{to{transform:translateY(-110vh) rotate(360deg);opacity:0;}}
-
-  section{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;padding:60px 20px;}
-
-  /* INTRO */
-  #intro{gap:18px;}
-  .intro-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(255,92,141,.35),transparent 70%);
-    filter:blur(40px);top:10%;z-index:-1;}
-  .intro-eyebrow{letter-spacing:2px;text-transform:uppercase;font-size:12px;color:var(--pink-soft);opacity:.8;}
-  .intro-title{font-size:clamp(28px,7vw,52px);font-weight:700;}
-  .intro-sub{font-size:clamp(16px,4vw,22px);color:var(--gold);font-weight:600;}
-  .intro-line{max-width:480px;font-size:15px;line-height:1.7;color:#f5d8e2;opacity:.9;}
-  .glow-btn{margin-top:14px;padding:14px 32px;border-radius:40px;border:1px solid var(--glass-border);
-    background:linear-gradient(135deg,var(--pink),#c23366);color:#fff;font-size:15px;font-weight:600;
-    cursor:pointer;box-shadow:0 0 25px rgba(255,92,141,.5);transition:transform .25s ease, box-shadow .25s ease;}
-  .glow-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 0 40px rgba(255,92,141,.75);}
-  .glow-btn.small{padding:10px 24px;font-size:14px;margin-top:20px;}
-
-  /* HERO / BIRTHDAY */
-  .hero-badge{display:inline-block;padding:6px 18px;border-radius:30px;background:var(--glass);
-    border:1px solid var(--glass-border);font-size:13px;letter-spacing:1px;color:var(--gold);margin-bottom:10px;}
-  .hero-name{font-size:clamp(34px,9vw,64px);font-weight:800;background:linear-gradient(90deg,#fff,var(--pink-soft));
-    -webkit-background-clip:text;background-clip:text;color:transparent;}
-  .hero-titles{margin-top:10px;font-size:clamp(13px,3vw,16px);color:var(--pink-soft);letter-spacing:.5px;}
-  .hero-para{margin-top:22px;max-width:520px;font-size:15px;line-height:1.8;color:#f5d8e2;}
-  .balloons{display:flex;gap:14px;margin-top:26px;font-size:34px;}
-  .balloons span{display:inline-block;animation:bob 3s ease-in-out infinite;}
-  .balloons span:nth-child(2){animation-delay:.4s;}
-  .balloons span:nth-child(3){animation-delay:.8s;}
-  .balloons span:nth-child(4){animation-delay:1.2s;}
-  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-  .scroll-cue{margin-top:40px;width:24px;height:38px;border:2px solid var(--glass-border);border-radius:14px;position:relative;}
-  .scroll-cue span{position:absolute;top:6px;left:50%;width:5px;height:5px;background:var(--pink);border-radius:50%;
-    transform:translateX(-50%);animation:scrollDot 1.6s infinite;}
-  @keyframes scrollDot{0%{top:6px;opacity:1;}80%{top:22px;opacity:0;}100%{opacity:0;}}
-
-  .section-title{font-size:clamp(24px,6vw,36px);font-weight:700;margin-bottom:34px;}
-
-  /* NICKNAMES */
-  .nick-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:640px;}
-  .nick-chip{padding:12px 22px;border-radius:30px;background:var(--glass);border:1px solid var(--glass-border);
-    font-size:15px;font-weight:600;color:#fff;backdrop-filter:blur(6px);}
-
-  /* BIRTHDAY WISHES */
-  .wish-card{max-width:600px;background:var(--glass);border:1px solid var(--glass-border);border-radius:22px;
-    padding:34px 28px;backdrop-filter:blur(10px);box-shadow:0 0 40px rgba(255,92,141,.12);}
-  .wish-text{font-size:16px;line-height:2;color:#fdeef3;text-align:left;white-space:pre-line;}
-
-  /* TIMELINE */
-  .story-date{color:var(--gold);margin-bottom:40px;font-size:14px;}
-  .timeline{position:relative;max-width:760px;width:100%;}
-  .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(var(--pink),transparent);
-    transform:translateX(-50%);}
-  .tl-card{position:relative;width:46%;background:var(--glass);border:1px solid var(--glass-border);
-    border-radius:16px;padding:20px;margin-bottom:36px;text-align:left;backdrop-filter:blur(8px);}
-  .tl-card[data-side="left"]{margin-right:auto;}
-  .tl-card[data-side="right"]{margin-left:auto;}
-  .tl-dot{position:absolute;top:20px;width:12px;height:12px;border-radius:50%;background:var(--pink);
-    box-shadow:0 0 12px var(--pink);}
-  .tl-card[data-side="left"] .tl-dot{right:-27px;}
-  .tl-card[data-side="right"] .tl-dot{left:-27px;}
-  .tl-card h3{font-size:16px;margin-bottom:8px;color:var(--gold);}
-  .tl-card p{font-size:14px;line-height:1.6;color:#f2dbe4;}
-  @media(max-width:640px){
-    .timeline-line{left:14px;}
-    .tl-card{width:calc(100% - 50px);margin-left:44px !important;margin-right:0 !important;}
-    .tl-card[data-side="left"] .tl-dot,.tl-card[data-side="right"] .tl-dot{left:-30px;right:auto;}
-  }
-
-  /* COUNTER */
-  .counter-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
-  .counter-box{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;
-    padding:20px 26px;min-width:90px;}
-  .counter-num{display:block;font-size:30px;font-weight:800;color:var(--pink-soft);}
-  .counter-label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#e8bccb;}
-  .counter-sub{margin-top:22px;font-size:14px;color:#f0cddb;}
-
-  /* REASONS */
-  .reasons-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:600px;width:100%;}
-  .reason-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:20px;}
-  .reason-card.wide{grid-column:1/-1;}
-  .reason-icon{font-size:20px;}
-  .reason-card p{margin-top:8px;font-size:14px;color:#f5dce6;}
-  @media(max-width:480px){.reasons-grid{grid-template-columns:1fr;}}
-
-  /* MEMORY WALL */
-  .memory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:600px;width:100%;perspective:1000px;}
-  .memory-card{position:relative;background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;
-    padding:20px;min-height:140px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-    transition:transform .5s;transform-style:preserve-3d;}
-  .memory-card.flipped{transform:rotateY(180deg);}
-  .memory-front,.memory-back{backface-visibility:hidden;font-size:13.5px;line-height:1.6;position:absolute;inset:16px;
-    display:flex;align-items:center;justify-content:center;}
-  .memory-back{transform:rotateY(180deg);color:var(--gold);}
-  .memory-hint{margin-top:16px;font-size:12px;color:#d99cb0;}
-  @media(max-width:480px){.memory-grid{grid-template-columns:1fr;}}
-
-  /* FINAL */
-  .final-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(255,92,141,.3),transparent 70%);
-    filter:blur(50px);z-index:-1;}
-  .final-line{font-size:clamp(16px,4vw,20px);color:#fce3ea;margin-bottom:6px;}
-  .final-title{margin-top:20px;font-size:clamp(26px,6vw,40px);font-weight:800;color:var(--pink-soft);}
-  .final-heart{margin-top:24px;font-size:40px;}
-  .final-heart::before{content:"🎂❤️🎉";}
-
-  /* MODAL */
-  .modal-overlay{position:fixed;inset:0;background:rgba(10,0,8,.75);backdrop-filter:blur(6px);
-    display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
-  .modal-card{max-width:420px;background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;
-    padding:32px 26px;text-align:center;}
-  .modal-card p{font-size:15px;line-height:1.7;color:#fdeef3;}
-  [hidden]{display:none !important;}
-</style>
+<title>For My Nida ❤️</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <canvas id="particles"></canvas>
 <div id="floating-hearts"></div>
 
+<!-- ===================== MIDNIGHT COUNTDOWN ===================== -->
+<div id="midnightCountdown" class="midnight-countdown">
+  <span class="mc-label" id="mcLabel">Countdown to Her Birthday</span>
+  <span class="mc-time" id="mcTime">--:--:--</span>
+</div>
+
 <!-- ===================== INTRO ===================== -->
 <section id="intro">
   <div class="intro-glow"></div>
+  <div class="intro-sparkle">✦</div>
   <p class="intro-eyebrow">a small universe, made for one person</p>
   <h1 class="intro-title">Happy Birthday, Nida <span class="heart">❤️</span></h1>
-  <p class="intro-sub">Meri jaan • Meri shehzadi • Meri munni ❤️</p>
-  <p class="intro-line">Aaj ka din khaas hai, kyunki aap iss duniya mein aayi thi — aur meri duniya iske baad hi puri hui.</p>
+  <p class="intro-sub">My <strong>Jaan</strong> • My <strong>Shehzadi</strong> • My <strong>Munni</strong> ❤️</p>
+  <p class="intro-line" id="introLine">Aaj ka din khaas hai, kyunki aap iss duniya mein aayi thi — aur meri duniya iske baad hi puri hui.</p>
   <button id="openHeartBtn" class="glow-btn">Open My Heart <span class="heart">❤️</span></button>
 </section>
 
@@ -162,9 +34,9 @@
   <!-- HERO -->
   <section class="hero" id="hero">
     <span class="hero-badge">🎂 It's Your Day 🎂</span>
-    <h1 class="hero-name" id="heroName">Happy Birthday, Nida <span class="heart">❤️</span></h1>
+    <h1 class="hero-name" id="heroName">Nida <span class="heart">❤️</span></h1>
     <p class="hero-titles">My Baby • My Jaan • My Shehzadi • My Munni • My Bachi • My Cutie • My Darling • My Begum Jee • My Cute Wife</p>
-    <p class="hero-para">Kuch log zindagi mein aate hain aur ek khoobsurat hissa ban jaate hain hamari kahani ka.<br>Aap meri favourite hissa ban gayi. Aur aaj, sirf aapka din hai — mera dil bhi aapko yehi kehna chahta hai: Happy Birthday, meri jaan.</p>
+    <p class="hero-para">Kuch log zindagi mein aate hain aur ek khoobsurat hissa ban jaate hain hamari kahani ka — aap meri poori kahani ban gayi.<br>Aaj, iss lamhe se, sirf aapka din hai. Happy Birthday, meri jaan. ❤️</p>
     <div class="balloons">
       <span>🎈</span><span>🎈</span><span>🎈</span><span>🎈</span>
     </div>
@@ -172,7 +44,7 @@
   </section>
 
   <!-- NICKNAMES -->
-  <section class="nicknames" id="nicknamesSection">
+  <section id="nicknamesSection">
     <h2 class="section-title">What I Call You <span class="heart">❤️</span></h2>
     <div class="nick-grid">
       <span class="nick-chip">Jaan ❤️</span>
@@ -188,20 +60,16 @@
   </section>
 
   <!-- BIRTHDAY WISH -->
-  <section class="letter-section" id="birthdaySection">
+  <section id="birthdaySection">
     <h2 class="section-title">Happy Birthday, Meri Jaan <span class="heart">🎂</span></h2>
-    <div class="wish-card">
-      <p class="wish-text">Aaj ka din bahut khaas hai, kyunki aaj iss duniya mein aap aayi thi. ❤️
+    <div class="wish-card glass">
+      <p class="wish-text">Aaj ka din duniya ke liye ek aam din hoga, lekin mere liye — yeh wo din hai jab meri sabse khoobsurat dua, mera sabse bada sukoon, iss zameen par aaya.
 
-Happy Birthday, meri jaan, meri shehzadi, meri munni, meri bachi, meri cutie, meri darling, meri begum jee.
+Aap jitni khoobsurat andar se hain, utni hi khoobsurat baahar se bhi hain, aur har guzarte din ke saath yeh ehsaas aur gehra hota jaata hai ke main kitna khushnaseeb hoon ke aap meri zindagi ka hissa hain.
 
-Aap jitni khoobsurat andar se hain, utni hi khoobsurat baahar se bhi hain — aur mujhe har din yeh yaad dilaane ka mauka milta hai ke main kitna khushnaseeb hoon ke aap meri zindagi mein hain.
+Aaj ke din meri dua hai — Allah aapko hamesha itna hi khush rakhe jitni aap sabko karti hain, aapki har muskurahat barqarar rahe, aur aapke saare khwaab, chhote ho ya bade, poore hon.
 
-Aaj ke din meri dua hai ke Allah aapko hamesha khush rakhe, aapki har muskurahat barqarar rahe, aur aapke saare khwaab poore hon. Aap jahan bhi rahen, meri dua aur mera pyaar hamesha aapke saath hoga.
-
-Is naye saal mein aap aur bhi khush rahen, aur bhi mazboot banein, aur main hamesha aapke saath khada rahoon — har khushi mein, har mushkil mein.
-
-Happy Birthday, meri jaan. Aap meri zindagi ka sabse khoobsurat tohfa hain. ❤️🎂</p>
+Happy Birthday, meri jaan. Aap meri zindagi ka sabse khoobsurat tohfa hain, aur main hamesha iske liye shukar guzaar rahoonga. ❤️</p>
     </div>
   </section>
 
@@ -254,8 +122,8 @@ Happy Birthday, meri jaan. Aap meri zindagi ka sabse khoobsurat tohfa hain. ❤�
   <!-- LOVE LETTER -->
   <section class="letter-section" id="letterSection">
     <h2 class="section-title">A Letter For You <span class="heart">💌</span></h2>
-    <div class="wish-card glass">
-      <p class="wish-text">Meri jaan, aaj jab aap yeh padh rahi hongi, main chahta hoon aap ek baar phir se mehsoos karein ke aap kitni khaas hain mere liye. Aapki har muskurahat, aapki har baat, aap jaise bhi hain — bas wahi kaafi hai mujhe khush rakhne ke liye. Happy Birthday, meri shehzadi.</p>
+    <div class="letter-card glass">
+      <p class="letter-text" id="letterText">Meri jaan, aaj jab aap yeh padh rahi hongi, main chahta hoon aap ek baar phir se mehsoos karein ke aap kitni khaas hain mere liye. Aapki har muskurahat, aapki har baat, aap jaise bhi hain — bas wahi kaafi hai mujhe khush rakhne ke liye. Happy Birthday, meri shehzadi.</p>
     </div>
   </section>
 
@@ -342,53 +210,6 @@ Happy Birthday, meri jaan. Aap meri zindagi ka sabse khoobsurat tohfa hain. ❤�
   </div>
 </div>
 
-<script>
-  // open intro -> site
-  document.getElementById('openHeartBtn').addEventListener('click', () => {
-    document.getElementById('intro').setAttribute('hidden','');
-    document.getElementById('site').removeAttribute('hidden');
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
-
-  // modal
-  const modal = document.getElementById('modalOverlay');
-  document.getElementById('lastThingBtn').addEventListener('click', () => modal.removeAttribute('hidden'));
-  document.getElementById('closeModalBtn').addEventListener('click', () => modal.setAttribute('hidden',''));
-
-  // memory card flip
-  document.querySelectorAll('.memory-card').forEach(c=>{
-    c.addEventListener('click',()=>c.classList.toggle('flipped'));
-  });
-
-  // counter - set the start date to match "23 February 2025"
-  const startDate = new Date('2025-02-23T00:00:00');
-  function updateCounter(){
-    const now = new Date();
-    let diff = Math.max(0, now - startDate);
-    const days = Math.floor(diff/(1000*60*60*24));
-    const hours = Math.floor((diff/(1000*60*60))%24);
-    const minutes = Math.floor((diff/(1000*60))%60);
-    const seconds = Math.floor((diff/1000)%60);
-    document.getElementById('cDays').textContent = days;
-    document.getElementById('cHours').textContent = hours;
-    document.getElementById('cMinutes').textContent = minutes;
-    document.getElementById('cSeconds').textContent = seconds;
-  }
-  setInterval(updateCounter,1000);
-  updateCounter();
-
-  // floating hearts
-  const fhContainer = document.getElementById('floating-hearts');
-  function spawnHeart(){
-    const h = document.createElement('div');
-    h.className='fh';
-    h.textContent = ['❤️','💗','💖','🎈'][Math.floor(Math.random()*4)];
-    h.style.left = Math.random()*100+'vw';
-    h.style.fontSize = (14+Math.random()*16)+'px';
-    h.style.animationDuration = (6+Math.random()*6)+'s';
-    fhContainer.appendChild(h);
-    setTimeout(()=>h.remove(), 13000);
-  }
-  setInterval(spawnHeart, 700);
-
-  // simple part
+<script src="script.js"></script>
+</body>
+</html>
