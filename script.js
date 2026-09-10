@@ -178,45 +178,6 @@ function burstConfetti(originYRatio = 0.35) {
 }
 
 // ============================================================
-// Midnight countdown — ticks down to the next local midnight,
-// then bursts into celebration automatically.
-// ============================================================
-const mcTime = document.getElementById('mcTime');
-const mcLabel = document.getElementById('mcLabel');
-const mcWrap = document.getElementById('midnightCountdown');
-let midnightHit = false;
-
-function pad2(n) { return String(n).padStart(2, '0'); }
-
-function updateMidnightCountdown() {
-  if (!mcTime || midnightHit) return;
-  const now = new Date();
-  const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-  const diff = nextMidnight - now;
-
-  if (diff <= 1000) {
-    midnightHit = true;
-    mcLabel.textContent = "It's Officially Her Day";
-    mcTime.textContent = '🎉 12:00 AM 🎉';
-    mcWrap.classList.add('hit');
-    burstConfetti(0.08);
-    setTimeout(() => burstConfetti(0.15), 400);
-    setTimeout(() => burstConfetti(0.25), 900);
-    return;
-  }
-
-  const h = Math.floor(diff / (1000 * 60 * 60));
-  const m = Math.floor((diff / (1000 * 60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
-  mcTime.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
-}
-
-if (mcTime) {
-  updateMidnightCountdown();
-  setInterval(updateMidnightCountdown, 1000);
-}
-
-// ============================================================
 // Intro sequence
 // ============================================================
 const introEl = document.getElementById('intro');
@@ -317,7 +278,7 @@ if (cDays) {
 }
 
 // ============================================================
-// Reason cards — tap toggle for touch devices (mirrors :hover)
+// Reason cards — tap toggle for touch devices
 // ============================================================
 document.querySelectorAll('.reason-card').forEach(card => {
   card.addEventListener('click', () => {
@@ -399,10 +360,10 @@ if (modalOverlay) {
 }
 
 // ============================================================
-// Fallback: if #site somehow starts visible (no JS-free intro), reveal anyway
+// Fallback
 // ============================================================
 window.addEventListener('load', () => {
   const site = document.getElementById('site');
   if (site && !site.hasAttribute('hidden')) initScrollReveal();
 });
-  
+      
